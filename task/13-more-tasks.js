@@ -12,8 +12,9 @@
  *   'abcdefghijklmnop',  'lmnopqrstuvwxyz'  => 'abcdefghijklmnopqrstuvwxyz'
  */
 function distinctLettersString(value1, value2) {
-  let newVal = (value1 + value2).split('');
-  return newVal.filter((x,i) => (newVal.indexOf(x,i+1) === -1)).sort().join('');
+  const newVal = (value1 + value2).split('');
+  return newVal.filter((x, i) => (newVal.indexOf(x, i+1) === -1))
+    .sort().join('');
 }
 
 
@@ -30,9 +31,17 @@ function distinctLettersString(value1, value2) {
  */
 
 function lowerLetters(value) {
-  let newObj = value.split('').filter(x => x.match(/[a-z]/));
-    newObj = newObj.reduce((x, i) => x[i] == undefined? Object.assign(x, {[i]: 1}) : Object.assign(x, {[i]: x[i]+1}), {});
- return newObj; 
+  const newArr = value.split('').sort();
+  let result = [];
+  newArr.forEach(x => {
+    if (x.charCodeAt() >= 97 && x.charCodeAt() <= 122) {
+      result = [...result, x];
+    }
+  });
+  return result.reduce((x, y) => {
+    x[y] = (x[y] || 0) + 1;
+    return x;
+  }, {});
 }
 
 
@@ -55,8 +64,9 @@ function lowerLetters(value) {
  */
 
 function titleCaseConvert(title, minorWords) {
-  let secondWord = minorWords ? minorWords.toLowerCase().split(' ') : [];
-    return title.toLowerCase().split(' ').map((x, i) => ( secondWord.includes(x) && i > 0) ? x :
+  const secondWord = minorWords ? minorWords.toLowerCase().split(' ') : [];
+  return title.toLowerCase().split(' ')
+    .map((x, i) => ( secondWord.includes(x) && i > 0) ? x :
       x.charAt(0).toUpperCase() + x.slice(1).toLowerCase()).join(' ');
 }
 
@@ -78,14 +88,15 @@ function titleCaseConvert(title, minorWords) {
  */
 
 function calcRPN(expr) {
-  if (expr == 0) return 0;
+  if (expr === 0) return 0;
   const main = {
     '*': (a, b) => a * b,
     '/': (a, b) => a / b,
     '+': (a, b) => a + b,
     '-': (a, b) => a - b
   };
-  let exprArr = expr.split(' ').map(x => isNaN(parseFloat(x)) ? x : parseFloat(x));
+  let exprArr = expr.split(' ')
+    .map(x => isNaN(parseFloat(x)) ? x : parseFloat(x));
   if (!(/\*|\/|\+|-/).test(expr)) return exprArr[exprArr.length - 1];
   let i = 0;
   while (exprArr.length > 1) {

@@ -55,9 +55,9 @@ function parseDataFromIso8601(value) {
  *    Date(2015,1,1)    => false
  */
 function isLeapYear(date) {
-   let year = new Date(`${date}`);
-   year = year.getFullYear();
-   return (year%4!=0)?false:(year%100!=0)?true:(year%400!=0)?false:true;
+  let year = new Date(`${date}`);
+  year = year.getFullYear();
+  return (year%4!==0)?false:(year%100!==0)?true:(year%400!==0)?false:true;
 }
 
 
@@ -77,7 +77,7 @@ function isLeapYear(date) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
 function timeSpanToString(startDate, endDate) {
-  return (new Date(endDate - startDate)).toISOString().slice(11,-1);
+  return (new Date(endDate - startDate)).toISOString().slice(11, -1);
 }
 
 
@@ -97,10 +97,10 @@ function timeSpanToString(startDate, endDate) {
  */
 function angleBetweenClockHands(date) {
   const Dates = new Date(Date.parse(date));
-  let min = Dates.getUTCMinutes(), hour = Dates.getUTCHours();
+  const min = Dates.getUTCMinutes(), hour = Dates.getUTCHours();
   let result = 0.5 * (60 * hour - 11 * min);
   while (result >= 360) result -= 360;
-  (result > 180)?result = 360 - result:true;
+  if(result > 180) result = 360 - result;
   return result * Math.PI / 180;
 }
 

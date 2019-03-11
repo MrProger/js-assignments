@@ -96,7 +96,7 @@ function getFirstChar(value) {
  *   '\tHello, World! ' => 'Hello, World!'
  */
 function removeLeadingAndTrailingWhitespaces(value) {
-   return value.trim();
+  return value.trim();
 }
 
 /**
@@ -198,7 +198,9 @@ function extractEmails(str) {
  *
  */
 function getRectangleString(width, height) {
-  return `┌${'─'.repeat(width-2)}┐\n` + `${`│${' '.repeat(width-2)}│\n`.repeat(height-2)}` + `└${'─'.repeat(width-2)}┘\n`;
+  return `┌${'─'.repeat(width-2)}┐\n` 
+  + `${`│${' '.repeat(width-2)}│\n`.repeat(height-2)}`
+   + `└${'─'.repeat(width-2)}┘\n`;
 }
 
 /**
@@ -219,9 +221,11 @@ function getRectangleString(width, height) {
  */
 function encodeToRot13(str) {
   return str.split('').map(x => {
-      if (x.match(/[a-zA-Z]/)) return String.fromCharCode(x.charCodeAt() + (x.toLowerCase() < 'n' ? 13 : -13));
-      else return x;
-    }).join('');
+    if (x.match(/[a-zA-Z]/)) {
+      return String.fromCharCode(x.charCodeAt()
+       + (x.toLowerCase() < 'n' ? 13 : -13));
+    } else return x;
+  }).join('');
 }
 
 /**
@@ -238,7 +242,7 @@ function encodeToRot13(str) {
  *   isString(new String('test')) => true
  */
 function isString(value) {
-  return typeof value == 'string'||value instanceof String;
+  return typeof value === 'string'||value instanceof String;
 }
 
 
@@ -268,8 +272,8 @@ function isString(value) {
  */
 function getCardId(value) {
   return [].concat(...['♣', '♦', '♥', '♠']
-    .map((x,i,A)=>['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-      .map(y=>A[i] = y+x))).indexOf(value);
+    .map((x, i, A)=>['A', '2', '3', '4', '5', '6', 
+      '7', '8', '9', '10', 'J', 'Q', 'K'].map(y=>A[i] = y+x))).indexOf(value);
 }
 
 module.exports = {
