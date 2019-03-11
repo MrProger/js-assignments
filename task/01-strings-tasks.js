@@ -66,7 +66,7 @@ function getStringFromTemplate(firstName, lastName) {
  *   'Hello, Chuck Norris!' => 'Chuck Norris'
  */
 function  extractNameFromTemplate(value) {
-  return value.slice(7, value.length);
+  return value.slice(7, value.length-1);
 }
 
 
@@ -171,7 +171,7 @@ function convertToUpperCase(str) {
  *   'info@gmail.com' => ['info@gmail.com']
  */
 function extractEmails(str) {
-  return str.replace(/;/g, ', ').split();
+  return str.split(';');
 }
 
 /**
@@ -198,7 +198,7 @@ function extractEmails(str) {
  *
  */
 function getRectangleString(width, height) {
-  return `┌${'─'.repeat(width)}┐\n` + `${` │${' '.repeat(width)}│\n`.repeat(height)}` + ` └${'─'.repeat(width)}┘\n`;
+  return `┌${'─'.repeat(width-2)}┐\n` + `${`│${' '.repeat(width-2)}│\n`.repeat(height-2)}` + `└${'─'.repeat(width-2)}┘\n`;
 }
 
 /**
@@ -218,22 +218,10 @@ function getRectangleString(width, height) {
  *
  */
 function encodeToRot13(str) {
-  let result = '';
-  for(let i = 0; i<str.length; i++){
-    let current = str.charCodeAt(i);
-    if(current == 32 || current<65) {
-      current -=13;
-    }
-    current += 13;
-    if(current>90 && current<104) {
-      current = current - 90 + 64;
-    }
-    if(current>122) {
-      current = current - 122 + 96;
-    }
-    result += String.fromCharCode(current);
-  }
-  return result
+  return str.split('').map(x => {
+      if (x.match(/[a-zA-Z]/)) return String.fromCharCode(x.charCodeAt() + (x.toLowerCase() < 'n' ? 13 : -13));
+      else return x;
+    }).join('');
 }
 
 /**
@@ -250,7 +238,7 @@ function encodeToRot13(str) {
  *   isString(new String('test')) => true
  */
 function isString(value) {
-  return (typeof value == 'string');
+  return typeof value == 'string'||value instanceof String;
 }
 
 
@@ -279,15 +267,9 @@ function isString(value) {
  *   'K♠' => 51
  */
 function getCardId(value) {
-  const deck = [];
-  const types = ['♣', '♦', '♥', '♠'];
-  const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-  for(let type1 = 0; type1<types.length; type1++){
-    for(let value1 = 0; value1<values.length; value1++){
-      deck.push(values[value1] + types[type1]);
-    }
-  }
-  return deck[value];
+  return [].concat(...['♣', '♦', '♥', '♠']
+    .map((x,i,A)=>['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+      .map(y=>A[i] = y+x))).indexOf(value);
 }
 
 module.exports = {

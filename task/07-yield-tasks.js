@@ -32,7 +32,7 @@
  *
  */
 function* get99BottlesOfBeer() {
-  throw new Error('Not implemented');
+
 }
 
 
@@ -46,9 +46,7 @@ function* get99BottlesOfBeer() {
  *
  */
 function* getFibonacciSequence() {
-  throw new Error('Not implemented');
 }
-
 
 /**
  * Traverses a tree using the depth-first strategy
@@ -81,7 +79,7 @@ function* getFibonacciSequence() {
  *
  */
 function* depthTraversalTree(root) {
-  throw new Error('Not implemented');
+
 }
 
 
@@ -107,7 +105,7 @@ function* depthTraversalTree(root) {
  *
  */
 function* breadthTraversalTree(root) {
-  throw new Error('Not implemented');
+
 }
 
 
@@ -125,7 +123,7 @@ function* breadthTraversalTree(root) {
  *   [ 1, 3, 5, ... ], [ -1 ] => [ -1, 1, 3, 5, ...]
  */
 function* mergeSortedSequences(source1, source2) {
-  throw new Error('Not implemented');
+
 }
 
 module.exports = {

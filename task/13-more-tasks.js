@@ -12,7 +12,8 @@
  *   'abcdefghijklmnop',  'lmnopqrstuvwxyz'  => 'abcdefghijklmnopqrstuvwxyz'
  */
 function distinctLettersString(value1, value2) {
-  throw new Error('Not implemented');
+  let newVal = (value1 + value2).split('');
+  return newVal.filter((x,i) => (newVal.indexOf(x,i+1) === -1)).sort().join('');
 }
 
 
@@ -29,8 +30,11 @@ function distinctLettersString(value1, value2) {
  */
 
 function lowerLetters(value) {
-  throw new Error('Not implemented');
+  let newObj = value.split('').filter(x => x.match(/[a-z]/));
+    newObj = newObj.reduce((x, i) => x[i] == undefined? Object.assign(x, {[i]: 1}) : Object.assign(x, {[i]: x[i]+1}), {});
+ return newObj; 
 }
+
 
 /**
  * Write a function that will convert a string into title case, given an optional
@@ -51,7 +55,9 @@ function lowerLetters(value) {
  */
 
 function titleCaseConvert(title, minorWords) {
-  throw new Error('Not implemented');
+  let secondWord = minorWords ? minorWords.toLowerCase().split(' ') : [];
+    return title.toLowerCase().split(' ').map((x, i) => ( secondWord.includes(x) && i > 0) ? x :
+      x.charAt(0).toUpperCase() + x.slice(1).toLowerCase()).join(' ');
 }
 
 /**
@@ -72,8 +78,31 @@ function titleCaseConvert(title, minorWords) {
  */
 
 function calcRPN(expr) {
-  throw new Error('Not implemented');
+  if (expr == 0) return 0;
+  const main = {
+    '*': (a, b) => a * b,
+    '/': (a, b) => a / b,
+    '+': (a, b) => a + b,
+    '-': (a, b) => a - b
+  };
+  let exprArr = expr.split(' ').map(x => isNaN(parseFloat(x)) ? x : parseFloat(x));
+  if (!(/\*|\/|\+|-/).test(expr)) return exprArr[exprArr.length - 1];
+  let i = 0;
+  while (exprArr.length > 1) {
+    if (main[exprArr[i]] !== undefined) {
+      exprArr = [].concat(
+        exprArr.slice(0, i - 2),
+        [main[exprArr[i]](exprArr[i-2], exprArr[i-1])],
+        exprArr.slice(i + 1)
+      );
+      i = 0;
+    }
+    i++;
+  }
+  return exprArr[0];
 }
+
+
 
 module.exports = {
   distinctLettersString,
