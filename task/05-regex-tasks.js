@@ -115,7 +115,7 @@ function getRegexForSSN() {
  *   'Pa55'.match(validator) => false
  */
 function getPasswordValidator(leng) {
- return new RegExp(`^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])[a-zA-Z0-9]{${leng},}$`);
+  return new RegExp(`^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])[a-zA-Z0-9]{${leng},}$`);
 }
 
 module.exports = {
