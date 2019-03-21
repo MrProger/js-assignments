@@ -32,7 +32,29 @@
  *
  */
 function* get99BottlesOfBeer() {
-  throw new Error('Not implemented');
+  let num = 99;
+  while(num>0){
+    if(num !== 1){
+      yield `${num} bottles of beer on the wall, ${num} bottles of beer.`;
+      if(num === 2){
+        yield `Take one down and pass it around, ${num-1} bottle of beer` + 
+      ` on the wall.`;
+      }
+      else {
+        yield `Take one down and pass it around, ${num-1} bottles of beer` + 
+        ` on the wall.`;
+      }
+    }
+    else if(num === 1){
+      yield '1 bottle of beer on the wall, 1 bottle of beer.';
+      yield 'Take one down and pass it around, no more bottles of' +
+       ' beer on the wall.';
+      yield 'No more bottles of beer on the wall, no more bottles of beer.';
+      yield 'Go to the store and buy some more, 99 bottles of' + 
+      ' beer on the wall.';
+    }
+    num--;
+  }
 }
 
 
@@ -46,10 +68,10 @@ function* get99BottlesOfBeer() {
  *
  */
 function* getFibonacciSequence() {
-  let current = 0, next = 1;
+  let curr = 0, next = 1;
   while (true) {
-    yield current;
-    [current, next] = [next, current + next];
+    yield curr;
+    [curr, next] = [next, curr + next];
   }
 }
 
@@ -84,7 +106,17 @@ function* getFibonacciSequence() {
  *
  */
 function* depthTraversalTree(root) {
-  throw new Error('Not implemented');
+  const arr = [root];
+  while (arr.length) {
+    const elem = arr.pop();
+    yield elem;
+    if (elem.children) {
+      elem.children.reverse().map(x => {
+        arr.push(x);
+      });
+    }
+  }
+  return arr.length;
 }
 
 
@@ -110,7 +142,16 @@ function* depthTraversalTree(root) {
  *
  */
 function* breadthTraversalTree(root) {
-  throw new Error('Not implemented');
+  const arr = [root];
+  for (const i of arr) {
+    yield i;
+    if (i.children) {
+      i.children.map(x => {
+        arr.push(x);
+      });
+    }
+  }
+  return arr.length;
 }
 
 
@@ -128,7 +169,26 @@ function* breadthTraversalTree(root) {
  *   [ 1, 3, 5, ... ], [ -1 ] => [ -1, 1, 3, 5, ...]
  */
 function* mergeSortedSequences(source1, source2) {
-  throw new Error('Not implemented');
+  const src1 = source1(), src2 = source2();
+  let next1 = src1.next().value, next2 = src2.next().value;
+  while (true) {
+    if(isNaN(next1)) {
+      yield next2;
+      next2 = src2.next().value;
+    }
+    else if (isNaN(next2)) {
+      yield next1;
+      next1 = src1.next().value;
+    }
+    else if (next1 < next2) {
+      yield next1;
+      next1 = src1.next().value;
+    }
+    else if (next2 < next1) {
+      yield next2;
+      next2 = src2.next().value;
+    }
+  }
 }
 
 module.exports = {
