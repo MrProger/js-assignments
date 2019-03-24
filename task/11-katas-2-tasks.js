@@ -135,7 +135,55 @@ const PokerRank = {
 };
 
 function getPokerHandRank(hand) {
-  throw new Error('Not implemented');
+  const toGet = function(hand) {
+    const srt = 'A234567891JQKA',
+      suits = [], ranks = {
+        count: [],
+        val: [],
+        sort: []
+      };
+    for (const i of hand) {
+      if (ranks.val.indexOf(i[0]) < 0) {
+        ranks.val.push(i[0]);
+        ranks.count.push(1);
+      } else ranks.count[ranks.val.indexOf(i[0])]++;
+      if (suits.indexOf(i.slice(-1)) < 0) suits.push(i.slice(-1));
+    }
+    ranks.sort = ranks.val.sort(
+      (a, b) => srt.indexOf(a) - srt.indexOf(b)
+    );
+    if (ranks.sort[0] === 'A' && ranks.sort[1] !== '2') {
+      ranks.sort.splice(0, 1);
+      ranks.sort.push('A');
+    }
+    this.num = function(n) {
+      let res = 0;
+      for (const i of ranks.count) if (i === n) res++;
+      return res;
+    };
+    this.flush = function() {
+      return suits.length === 1;
+    };
+    this.straight = function() {
+      if (ranks.sort.length < 5) return 0;
+      for (let i = 1; i < 5; i++) {
+        if(srt.indexOf(ranks.sort[i - 1]) + 1 !== srt.indexOf(ranks.sort[i]) &&
+          srt.indexOf(ranks.sort[i - 1]) + 1 !== srt.lastIndexOf(ranks.sort[i])
+        ) return 0;
+      }
+      return 1;
+    };
+  };
+  const nextHand = new toGet(hand);
+  if (nextHand.flush() && nextHand.straight()) return PokerRank.StraightFlush;
+  else if (nextHand.num(4)) return PokerRank.FourOfKind;
+  else if (nextHand.num(3) && nextHand.num(2)) return PokerRank.FullHouse;
+  else if (nextHand.flush()) return PokerRank.Flush;
+  else if (nextHand.straight()) return PokerRank.Straight;
+  else if (nextHand.num(3)) return PokerRank.ThreeOfKind;
+  else if (nextHand.num(2) === 2) return PokerRank.TwoPairs;
+  else if (nextHand.num(2)) return PokerRank.OnePair;
+  else return PokerRank.HighCard;
 }
 
 
@@ -171,8 +219,65 @@ function getPokerHandRank(hand) {
  *    '+-------------+\n'
  */
 function* getFigureRectangles(figure) {
-  throw new Error('Not implemented');
+  const arr = figure.split('\n');
+  const func = function(row, col, dRow, dCol, str) {
+    if (dRow) {
+      for (let i = row + dRow; i < arr.length && i >= 0; i += dRow) {
+        if ( arr[i][col] === '+' &&
+          (arr[i][col - dRow] === '+' || arr[i][col - dRow] === str)
+        ) return i;
+        else if (arr[i][col] === ' ') return 0;
+      }
+    }
+    if (dCol && arr[row + dCol]) {
+      for (let i = col + dCol; i < arr[row].length && i >= 0; i += dCol) {
+        if (arr[row][i] === '+' &&
+        (arr[row + dCol][i] === '+' || arr[row + dCol][i] === str))return i;
+        else if (arr[row][i] === ' ') return 0;
+      }
+    }
+    return 0;
+  };
+
+  function rectangle(row, col) {
+    let _col, _row;
+    _col = func(row, col, 0, 1, '|');
+    if (_col === false) return 0;
+    _row = func(row, _col, 1, 0, '-');
+    if (_row === false) return 0;
+    const resultCol = _col;
+    const resultRow = _row;
+    _col = func(_row, _col, 0, -1, '|');
+    if (_col === false) return 0;
+    _row = func(_row, _col, -1, 0, '-');
+    if (_row === false) return 0;
+    if (_row === row && _col === col) {
+      return {
+        width: resultCol - col + 1,
+        height: resultRow - row + 1
+      };
+    } else return 0;
+  }
+
+  function next(obj) {
+    var line = '+' + '-'.repeat(obj.width - 2) + '+\n',
+      result = line;
+    result += ('|' + ' '.repeat(obj.width - 2) + '|\n').repeat(obj.height - 2);
+    return result + line;
+  }
+
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr[i].length; j++) {
+      if ( arr[i][j] === '+' && arr[i + 1] &&
+        (arr[i + 1][j] === '|' || arr[i + 1][j] === '+') &&
+        (arr[i][j + 1] === '-' || arr[i][j + 1] === '+')
+      ) { const obj = rectangle(i, j);
+        if (obj) yield next(obj);
+      }
+    }
+  }
 }
+
 
 module.exports = {
   parseBankAccount: parseBankAccount,

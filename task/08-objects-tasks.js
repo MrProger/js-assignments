@@ -114,34 +114,173 @@ function fromJSON(proto, json) {
  *  For more examples see unit tests.
  */
 
+const check = {
+  nothing: 0,
+  elem: 1,
+  id: 2,
+  class: 3,
+  attr: 4,
+  pseudoClass: 5,
+  pseudoElement: 6
+};
+
+class Css {
+  constructor() { 
+    this._element = ''; 
+    this._id = ''; 
+    this._class = []; 
+    this._attr = []; 
+    this._pseudoClass = []; 
+    this._pseudoElement = '';
+    this._lastPart = check.nothing;
+  }
+
+  getElement() {
+    return this._element;
+  }
+
+  id(value) {
+    if(this._id.length) {
+      throw Error('Element, id and pseudo-element should not'
+      +' occur more then one time inside the selector');
+    }
+
+    this.checkPart(check.id);
+    this._id = value;
+    return this;
+  }
+  element(value) {
+    if(this._element.length) {
+      throw Error('Element, id and pseudo-element should not'
+      +' occur more then one time inside the selector');
+    }
+
+    this.checkPart(check.elem);
+    this._element = value;
+    return this;
+  }
+
+  getId() {
+    return this._id ? `#${ this._id}` : '';
+  }
+
+  class(value) {
+    this.checkPart(check.class);
+    this._class.push(value);
+    return this;
+  }
+
+  getClass() {
+    return this._class.map(_class => `.${_class}`).join('');
+  }
+
+  attr(value) {
+    this.checkPart(check.attr);
+    this._attr.push(value);
+    return this;
+  }
+
+  getAttr() {
+    return this._attr.map(_attr => `[${_attr}]`).join('');
+  }
+
+  pseudoClass(value) {
+    this.checkPart(check.pseudoClass);
+    this._pseudoClass.push(value);
+    return this;
+  }
+
+  getPseudoClass() {
+    return this._pseudoClass.map(_pseudoClass => `:${_pseudoClass}`).join('');
+  }
+
+  pseudoElement(value) {
+    if(this._pseudoElement.length) {
+      throw Error('Element, id and pseudo-element should not'
+      +' occur more then one time inside the selector');
+    }
+
+    this.checkPart(check.pseudoElement);
+    this._pseudoElement = value;
+    return this;
+  }
+
+  getPseudoElement() {
+    if(this._pseudoElement) return `::${this._pseudoElement}`;
+    else return '';
+  }
+
+  stringify() {
+    return `${this.getElement()}${this.getId()}${this.getClass()}`
+    +`${this.getAttr()}${this.getPseudoClass()}${this.getPseudoElement()}`;
+  }
+
+  checkPart(currentPart) {
+    if(currentPart < this._lastPart) {
+      throw new Error('Selector parts should be arranged in the following'
+      +' order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    this._lastPart = currentPart;
+  }
+}
+
+class Selectors {
+  constructor() {
+    this._selectors = [];
+    this._combinators = [];
+  }
+
+  setSelectors(...selectors) {
+    this._selectors.push(...selectors);
+  }
+
+  setCombinators(combinator) {
+    this._combinators.push(` ${combinator} `);
+  }
+
+  stringify() {
+    let combination = '';
+
+    for(let i = 0; i < this._combinators.length; i++) {
+      combination += this._selectors[i].stringify() + this._combinators[i] 
+      + this._selectors[i + 1].stringify();
+    }
+
+    return combination;
+  }
+}
+
 const cssSelectorBuilder = {
 
   element(value) {
-    throw new Error('Not implemented');
-  },
+    return new Css().element(value);  },
 
   id(value) {
-    throw new Error('Not implemented');
+    return new Css().id(value);
   },
 
   class(value) {
-    throw new Error('Not implemented');
+    return new Css().class(value);
   },
 
   attr(value) {
-    throw new Error('Not implemented');
+    return new Css().attr(value);
   },
 
   pseudoClass(value) {
-    throw new Error('Not implemented');
+    return new Css().pseudoClass(value);
   },
 
   pseudoElement(value) {
-    throw new Error('Not implemented');
+    return new Css().pseudoElement(value);
   },
 
   combine(selector1, combinator, selector2) {
-    throw new Error('Not implemented');
+    const combination = new Selectors();
+    combination.setSelectors(selector1, selector2);
+    combination.setCombinators(combinator);
+
+    return combination;
   }
 };
 

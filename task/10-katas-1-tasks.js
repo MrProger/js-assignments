@@ -16,8 +16,29 @@
  *  ]
  */
 function createCompassPoints(sides = ['N', 'E', 'S', 'W']) {
-  /* use array of cardinal directions only! it is a default parameter! */
-  throw new Error('Not implemented');
+  let azimuth = 0;
+  const step = 11.25;
+  let i = 0;
+  const result = [{ abbreviation: sides[0], azimuth }];
+  while (i < 4) {
+    const s1 = sides[i];
+    const s2 = sides[i + 1];
+    let num = sides[i + 2];
+    const sym = 'b';
+    if (!num) num = sides[0];
+    [s1 + sym + s2, s1 + s1 + s2, s1 + s2 + sym + s1, s1 + s2,
+      s1 + s2 + sym + s2, s2 + s1 + s2, s2 + sym + s1, s2,
+      s2 + sym + num, s2 + num + s2, num + s2 + sym + s2, num + s2,
+      num + s2 + sym + num, num + num + s2,
+      num + sym + s2].map(abbreviation => {
+      azimuth += step;
+      result.push({ abbreviation, azimuth });
+    });
+    azimuth += step;
+    if (!(azimuth === 360)) result.push({ abbreviation: num, azimuth });
+    i += 2;
+  }
+  return result;
 }
 
 
@@ -143,7 +164,41 @@ function getZigZagMatrix(n) {
  *
  */
 function canDominoesMakeRow(dominoes) {
-  throw new Error('Not implemented');
+  let arr = [];
+  let nums = [{now: dominoes[0], end: dominoes.slice(1)}];
+  while (!(nums[0].end.length === 0)) {
+    arr = [];
+    for(const val of nums) {
+      val.end.forEach((x, i) => {
+        const rest = val.end.filter((_, j) => j !== i);
+        if (val.now[0] === x[1]) {
+          arr.push({
+            now: [val.now[1], x[0]],
+            end: rest
+          });
+        } else if(val.now[1] === x[1]) {
+          arr.push({
+            now: [val.now[0], x[0]],
+            end: rest
+          });
+        } else if (val.now[0] === x[0]) {
+          arr.push({
+            now: [val.now[1], x[1]],
+            end: rest
+          });
+        } else if (val.now[1] === x[0]) {
+          arr.push({
+            now: [val.now[0], x[1]],
+            end: rest
+          });
+        }
+      });
+    }
+    if (arr.length === 0) return 0;
+    nums = arr;
+  }
+
+  return true;
 }
 
 

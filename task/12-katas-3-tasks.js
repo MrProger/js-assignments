@@ -28,7 +28,25 @@
  *   'NULL'      => false
  */
 function findStringInSnakingPuzzle(puzzle, searchStr) {
-  throw new Error('Not implemented');
+  const rec = function(exc) {
+    const pos = exc[exc.length - 1];
+    for (const val of [[0, 1], [1, 0], [0, -1], [-1, 0]] ) {
+      if (searchStr.length === exc.length) return true;
+      if (pos[0] + val[0] >= 0 && pos[0] + val[0] < puzzle.length &&
+        pos[1] + val[1] >= 0 && pos[1] + val[1] < puzzle[pos[0] 
+        + val[0]].length && !exc.some(x => x[0] === pos[0] + val[0] 
+        && x[1] === pos[1] + val[1]) && puzzle[pos[0] + val[0]][pos[1] 
+        + val[1]] === searchStr[exc.length]){
+        if (rec(exc.concat([[pos[0] + val[0], pos[1] + val[1]]]))) return true;
+      }
+    }
+  };
+  for (let i = 0; i < puzzle.length; i++) {
+    for (let j = 0; j < puzzle[i].length; j++) {
+      if (puzzle[i][j] === searchStr[0] && rec([[i, j]])) return true;
+    }
+  }
+  return false;
 }
 
 
