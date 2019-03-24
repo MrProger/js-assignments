@@ -66,15 +66,10 @@ function findStringInSnakingPuzzle(puzzle, searchStr) {
 function* getPermutations(chars) {
   function* permute(res) {
     for (let i = 0; i < chars.length; i++) {
-      if (res.indexOf(chars[i]) < 0){
-        yield* permute(res + chars[i]);
-      }
+      if (res.indexOf(chars[i]) < 0) yield* permute(res + chars[i]);
     }
-    if (res.length === chars.length){
-      yield res;
-    }
+    if (res.length === chars.length) yield res;
   }
-
   yield* permute('');
 }
 
