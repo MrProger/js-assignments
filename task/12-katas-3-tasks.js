@@ -46,7 +46,18 @@ function findStringInSnakingPuzzle(puzzle, searchStr) {
  *    'abc' => 'abc','acb','bac','bca','cab','cba'
  */
 function* getPermutations(chars) {
-  throw new Error('Not implemented');
+  function* permute(res) {
+    for (let i = 0; i < chars.length; i++) {
+      if (res.indexOf(chars[i]) < 0){
+        yield* permute(res + chars[i]);
+      }
+    }
+    if (res.length === chars.length){
+      yield res;
+    }
+  }
+
+  yield* permute('');
 }
 
 
@@ -68,7 +79,12 @@ function* getPermutations(chars) {
  *    [ 1, 6, 5, 10, 8, 7 ] => 18  (buy at 1,6,5 and sell all at 10)
  */
 function getMostProfitFromStockQuotes(quotes) {
-  throw new Error('Not implemented');
+  let result = 0;
+  result = quotes.reduce((x, y, i) => {
+    return  x + (Math.max(...quotes.slice(i)) - y);
+  },
+  0);
+  return result;
 }
 
 
@@ -94,11 +110,29 @@ function UrlShortener() {
 
 UrlShortener.prototype = {
   encode(url) {
-    throw new Error('Not implemented');
+    let result = '', i = 0;
+    do{
+      result += String.fromCharCode((url.charCodeAt(i)<<9)|url.charCodeAt(i+1));
+      i += 2;
+    }while(i < url.length);
+    return result;
   },
 
   decode(code) {
-    throw new Error('Not implemented');
+    let result = '', i = 0;
+    do{
+      const num = ~~code.charCodeAt(i);
+      const a = (num >> 9) & 255;
+      const b = num & 255;
+      if(!b){
+        result += String.fromCharCode(a);
+      }
+      else{
+        result += String.fromCharCode(a) + String.fromCharCode(b);
+      }
+      i++;
+    }while(i < code.length);
+    return result;
   }
 };
 

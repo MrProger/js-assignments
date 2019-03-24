@@ -56,7 +56,19 @@ function createCompassPoints(sides = ['N', 'E', 'S', 'W']) {
  *   'nothing to do' => 'nothing to do'
  */
 function* expandBraces(str) {
-  throw new Error('Not implemented');
+  const first = [str], second = [];
+  while (first.length > 0) {
+    str = first.shift();
+    const sym = str.match(/{([^{}]*)}/);
+    if (sym) {
+      for (const i of sym[1].split(',')) {
+        first.push(str.replace(sym[0], i));
+      }
+    } else if (second.indexOf(str) < 0) {
+      second.push(str);
+      yield str;
+    }
+  }
 }
 
 
@@ -89,7 +101,23 @@ function* expandBraces(str) {
  *
  */
 function getZigZagMatrix(n) {
-  throw new Error('Not implemented');
+  const arr = [];
+  for (let i = 0; i < n; i++) arr[i] = [];
+  let i = 1, j = 1;
+  for (let k = 0; k < Math.pow(n, 2); k++) {
+    arr[i - 1][j - 1] = k;
+    if ((i + j) % 2 === 0) {
+      if (j < n) j++;
+      else i += 2;
+      if (i > 1) i--;
+    } 
+    else {
+      if (i < n) i++;
+      else j += 2;
+      if (j > 1) j--;
+    }
+  }
+  return arr;
 }
 
 
@@ -141,7 +169,20 @@ function canDominoesMakeRow(dominoes) {
  * [ 1, 2, 4, 5]          => '1,2,4,5'
  */
 function extractRanges(nums) {
-  throw new Error('Not implemented');
+  const newA = [[nums[0]]];
+  nums.map((_, i) => {
+    if(nums[i+1]-1 === newA[newA.length - 1][newA[newA.length - 1].length - 1]){
+      newA[newA.length - 1].push(nums[i+1]);
+    } 
+    else newA.push([nums[i+1]]);
+  });
+  newA.splice(-1);
+  newA.forEach((_, i) => {
+    if (newA[i].length > 2) {
+      newA[i] = newA[i][0] + '-' + newA[i][newA[i].length - 1];
+    }
+  });
+  return newA.join(',');
 }
 
 module.exports = {
